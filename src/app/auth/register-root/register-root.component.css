@@ -2,9 +2,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; 
+  min-height: 100vh;
   width: 100%;
-  background-color: #e6e5e0; 
+  background-color: #e6e5e0;
 }
 
 .login-box {
@@ -23,6 +23,7 @@
   margin: 0 auto; 
 }
 
+
 /* 🔹 Título */
 h2 {
   margin: 0px;
@@ -33,16 +34,11 @@ h2 {
 /* 🔹 Grupo de entrada */
 .input-group {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   background: #e6e5e0;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 15px;
-}
-
-.input-group i {
-  margin-right: 10px;
-  color: #0e0f0f;
 }
 
 /* 🔹 Inputs */
@@ -52,6 +48,7 @@ h2 {
   outline: none;
   width: 100%;
   font-size: 16px;
+  padding: 5px;
 }
 
 /* 🔹 Botón */
@@ -69,4 +66,17 @@ button {
 
 button:hover {
   background: #203590;
+}
+
+/* Mensajes de error y éxito */
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.success {
+  color: green;
+  font-size: 14px;
+  margin-top: 10px;
 }

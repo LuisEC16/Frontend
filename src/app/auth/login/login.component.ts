@@ -3,7 +3,7 @@ import { LoginService } from './login.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import * as CryptoJS from 'crypto-js';
+import CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-login',
@@ -14,9 +14,9 @@ import * as CryptoJS from 'crypto-js';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  user = {
-    User: '',
-    Password: ''
+  users = {
+    user: '',
+    password: ''
   };
   errorMessage: string | null = null;
   successMessage: string | null = null;
@@ -25,9 +25,9 @@ export class LoginComponent {
 
   onSubmit() {
     // Hashear la contraseña antes de enviarla
-    const hashedPassword = CryptoJS.SHA256(this.user.Password).toString();
+    const hashedPassword = CryptoJS.SHA256(this.users.password).toString();
 
-    this.loginService.login({ User: this.user.User, Password: hashedPassword }).subscribe({
+    this.loginService.login({ user: this.users.user, password: hashedPassword }).subscribe({
       next: (response) => {
         this.successMessage = 'Inicio exitoso.';
         this.errorMessage = null;

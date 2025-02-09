@@ -3,11 +3,11 @@
     <div class="logo">
       <img src="assets/logo.png" alt="Logo">
     </div>
-    <h2>Bienvenido nuevamente</h2>
-    <p>Introduce los datos para entrar en tu cuenta.</p>
-    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <h2>Configuración Inicial</h2>
+    <p>Crea el usuario root para acceder al sistema.</p>
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+    <form (ngSubmit)="createRootUser()" #setupForm="ngForm">
       <div class="input-group">
         <i class="fas fa-envelope"></i>
         <input 
@@ -17,7 +17,7 @@
           name="user"
         />
       </div>
-      
+
       <!-- Contraseña -->
       <div class="input-group">
         <i class="fas fa-lock"></i>
@@ -29,14 +29,8 @@
           name="password"
         />
       </div>
+      <button type="submit">Crear usuario root</button>
 
-      <!-- Botón de login -->
-      <button type="submit">Iniciar sesion</button>
-
-      <!-- Olvidó contraseña -->
-      <p class="forgot-password">
-        En caso de olvidar sus datos, por favor comunicarse con el administrador.
-      </p>
     </form>
   </div>
 </div>
