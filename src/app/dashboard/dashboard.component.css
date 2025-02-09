@@ -1,0 +1,27 @@
+.dashboard-container {
+    background-color: #f9fafb;
+    min-height: 100vh;
+  }
+  .header {
+    background-color: #1e3a8a;
+  }
+  .card {
+    border-radius: 0.5rem;
+  }
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .btn-primary {
+    background-color: #1d4ed8;
+    color: #fff;
+  }
+  .btn-secondary {
+    background-color: #64748b;
+    color: #fff;
+  }
+  .btn-accent {
+    background-color: #10b981;
+    color: #fff;
+  }
