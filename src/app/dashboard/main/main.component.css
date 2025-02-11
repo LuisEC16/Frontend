@@ -1,0 +1,88 @@
+/* Estructura general del layout */
+.dashboard-layout {
+    display: flex;
+    width: 100%;
+  }
+  
+  /* Sidebar fija */
+  .sidebar {
+    width: 250px;
+    background-color: #4A90E2;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    padding: 20px;
+  }
+  
+  /* Contenido principal */
+  .dashboard-content {
+    flex: 1; /* Se ajusta al espacio disponible */
+    margin-left: 250px; /* Mismo ancho que la sidebar */
+    padding: 20px;
+    overflow-x: auto; /* Permite desplazamiento horizontal si es necesario */
+  }
+  
+  /* Encabezado del dashboard */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 8px;
+    color: white;
+  }
+  
+  /* Botón de cerrar sesión */
+  .logout {
+    background: red;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 5px;
+  }
+  
+  /* Grid de información */
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .card {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+  }
+  
+  /* Tabla de transacciones */
+  .transactions {
+    margin-top: 20px;
+  }
+  
+  .transactions table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .transactions th,
+  .transactions td {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+  }
+  
+  .status.waiting {
+    color: yellow;
+  }
+  
+  .status.success {
+    color: green;
+  }
+  
