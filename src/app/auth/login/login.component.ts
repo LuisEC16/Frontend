@@ -27,15 +27,18 @@ export class LoginComponent {
     // Hashear la contraseña antes de enviarla
     const hashedPassword = CryptoJS.SHA256(this.users.password).toString();
 
+
     this.loginService.login({ user: this.users.user, password: hashedPassword }).subscribe({
       next: (response) => {
-        this.successMessage = 'Inicio exitoso.';
-        this.errorMessage = null;
-        this.router.navigate(['/dashboard']); 
+        if (response.token) {
+          localStorage.setItem('authToken', response.token); // ✅ Guarda el token
+          this.router.navigate(['/dashboard']); // ✅ Redirige al dashboard
+        } else {
+          this.errorMessage = 'No se recibió un token válido.';
+        }
       },
       error: (error) => {
         this.errorMessage = 'Usuario o contraseña inválida. Intenta de nuevo.';
-        this.successMessage = null;
         console.error('Error:', error);
       }
     });
