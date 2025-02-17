@@ -1,35 +1,17 @@
-<div class="settings-container">
-    <h2>⚙️ Configuración</h2>
-  
-    <!-- 🔹 Sección para cambiar contraseña -->
-    <div class="form-section">
-      <h3>Cambiar Contraseña</h3>
-      <form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()">
-        <label>Contraseña Actual:</label>
-        <input type="password" formControlName="currentPassword" required>
-  
-        <label>Nueva Contraseña:</label>
-        <input type="password" formControlName="newPassword" required>
-  
-        <label>Confirmar Nueva Contraseña:</label>
-        <input type="password" formControlName="confirmPassword" required>
-  
-        <button type="submit" [disabled]="changePasswordForm.invalid">Cambiar Contraseña</button>
-      </form>
+<div class="container">
+    <div class="form-card">
+        <h2>Cambiar Contraseña</h2>
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+            <label for="oldPassword">Contraseña Anterior</label>
+            <input type="password" id="oldPassword" formControlName="oldPassword" required>
+
+            <label for="newPassword">Nueva Contraseña</label>
+            <input type="password" id="newPassword" formControlName="newPassword" required>
+
+            <label for="confirmPassword">Confirmar Nueva Contraseña</label>
+            <input type="password" id="confirmPassword" formControlName="confirmPassword" required>
+
+            <button type="submit" [disabled]="passwordForm.invalid">Actualizar Contraseña</button>
+        </form>
     </div>
-  
-    <!-- 🔹 Sección para crear nuevos usuarios -->
-    <div class="form-section">
-      <h3>Crear Nuevo Usuario</h3>
-      <form [formGroup]="createUserForm" (ngSubmit)="createUser()">
-        <label>Nombre de Usuario:</label>
-        <input type="text" formControlName="username" required>
-  
-        <label>Contraseña:</label>
-        <input type="password" formControlName="password" required>
-  
-        <button type="submit" [disabled]="createUserForm.invalid">Crear Usuario</button>
-      </form>
-    </div>
-  </div>
-  
+</div>

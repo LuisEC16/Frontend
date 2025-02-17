@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="header">
+        <h2>Lista de usuarios</h2>
+        <button class="add-user-btn" (click)="openAddUserForm()">+ Añadir Usuario</button>
+    </div>
+
+    <!-- Barra de búsqueda -->
+    <div class="search-bar">
+        <input type="text" [(ngModel)]="searchText" placeholder="Buscar usuario..." (input)="filterUsers()">
+        <button class="search-btn">Buscar</button>
+    </div>
+
+    <!-- Tabla de usuarios -->
+    <table>
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Creado el</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of filteredUsers">
+                <td>{{ user.name }}</td>
+                <td>{{ user.created_at | date:'yyyy-MM-dd' }}</td>
+                <td>
+                    <button class="edit-btn" (click)="openEditUserForm(user)">Editar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Modal para añadir usuario -->
+    <div *ngIf="showAddUserForm" class="modal">
+        <div class="form-container">
+            <h2>Crear Usuario</h2>
+            <form [formGroup]="addUserForm" (ngSubmit)="saveUser()">
+                <label>Usuario *</label>
+                <input type="text" formControlName="user" required>
+
+                <label>Contraseña *</label>
+                <input type="password" formControlName="password" required>
+
+                <div class="actions">
+                    <button type="button" (click)="closeAddUserForm()">Cancelar</button>
+                    <button type="submit" [disabled]="addUserForm.invalid">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

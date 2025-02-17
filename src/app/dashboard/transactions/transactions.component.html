@@ -1,0 +1,70 @@
+<div class="transactions-container">
+    <!-- 🔹 Título -->
+    <h2>🔎 Auditoría de Transacciones</h2>
+  
+    <!-- 🔹 Filtros -->
+    <div class="filters">
+      <label for="date">📅 Fecha:</label>
+      <input type="date" id="date" [(ngModel)]="filters.date">
+  
+      <label for="status">🟢 Estado:</label>
+      <select id="status" [(ngModel)]="filters.status">
+        <option value="">Todos</option>
+        <option value="ready_to_be_checked">Por Verificar</option>
+        <option value="completed">Completado</option>
+        <option value="pending">Pendiente</option>
+      </select>
+  
+      <label for="method">💳 Método de Pago:</label>
+      <select id="method" [(ngModel)]="filters.method">
+        <option value="">Todos</option>
+        <option value="zelle">Zelle</option>
+        <option value="paypal">PayPal</option>
+        <option value="credit_card">Tarjeta</option>
+        <option value="bank_transfer">Transferencia Bancaria</option>
+      </select>
+  
+      <button (click)="applyFilters()" class="apply-btn">🔍 Aplicar Filtros</button>
+    </div>
+  
+    <!-- 🔹 Tabla de transacciones -->
+    <table class="transactions-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuario</th>
+          <th>Curso</th>
+          <th>Monto</th>
+          <th>Estado</th>
+          <th>Método de Pago</th>
+          <th>Fecha</th>
+          <th>Validado Por</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="filteredTransactions.length === 0">
+          <td colspan="8">⚠️ No hay transacciones disponibles.</td>
+        </tr>
+        <tr *ngFor="let transaction of filteredTransactions">
+          <td>{{ transaction.id }}</td>
+          <td>{{ transaction.user?.firstName }} {{ transaction.user?.lastName }}</td>
+          <td>{{ transaction.course?.name }}</td>
+          <td>{{ transaction.amount | currency:'USD' }}</td>
+          <td>{{ transaction.status }}</td>
+          <td>{{ transaction.paymentMethod }}</td>
+          <td>{{ transaction.createdAt | date:'short' }}</td>
+          <td *ngIf="transaction.validatedBy; else notValidated">
+            {{ transaction.validatedBy.firstName }} {{ transaction.validatedBy.lastName }}
+          </td>
+          <ng-template #notValidated>
+            <td>❌ No validado</td>
+          </ng-template>
+        </tr>
+      </tbody>
+      
+    </table>
+  
+    <!-- 🔹 Exportar Transacciones -->
+    <button (click)="exportTransactions()" class="export-btn">📥 Exportar CSV</button>
+  </div>
+  

@@ -1,53 +1,45 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { SettingsService } from './settings.service';
+
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], // 🔥 Importando módulos necesarios para Standalone
+  imports: [ReactiveFormsModule],
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.css']
+  styleUrl: './settings.component.css'
 })
 export class SettingsComponent {
-  changePasswordForm: FormGroup;
-  createUserForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
-    // Formulario para cambiar contraseña
-    this.changePasswordForm = this.fb.nonNullable.group({
-      currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
-    });
+  passwordForm = new FormGroup({
+    oldPassword: new FormControl('', [Validators.required]),
+    newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    confirmPassword: new FormControl('', [Validators.required])
+  });
 
-    // Formulario para crear usuario
-    this.createUserForm = this.fb.nonNullable.group({
-      username: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
-  }
+  userForm = new FormGroup({
+    username: new FormControl('', [Validators.required]),
+    userPassword: new FormControl('', [Validators.required, Validators.minLength(6)])
+  });
+
+  constructor(private settingsService: SettingsService) {}
 
   changePassword() {
-    if (this.changePasswordForm.valid) {
-      const { currentPassword, newPassword, confirmPassword } = this.changePasswordForm.value;
+    if (this.passwordForm.value.newPassword !== this.passwordForm.value.confirmPassword) {
+      alert("Las contraseñas no coinciden");
+      return;
+    }
 
-      if (newPassword !== confirmPassword) {
-        alert('❌ Las contraseñas no coinciden.');
-        return;
+    this.settingsService.updatePassword(this.passwordForm.value).subscribe({
+      next: response => {
+        alert("Contraseña actualizada correctamente");
+        this.passwordForm.reset();
+      },
+      error: (err: any) => {
+        console.error("Error al actualizar la contraseña:", err);
+        alert("Error al actualizar la contraseña");
       }
-
-      console.log('🔄 Cambiando contraseña...', { currentPassword, newPassword });
-      // 🔥 Aquí puedes hacer la petición al backend para actualizar la contraseña
-    }
-  }
-
-  createUser() {
-    if (this.createUserForm.valid) {
-      const { username, password } = this.createUserForm.value;
-
-      console.log('🆕 Creando nuevo usuario...', { username, password });
-      // 🔥 Aquí puedes hacer la petición al backend para registrar un nuevo usuario
-    }
+    });
   }
 }

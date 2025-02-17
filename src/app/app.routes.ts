@@ -5,11 +5,12 @@ import { RegisterRootService } from './auth/register-root/register-root.service'
 import { inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';  // ✅ Manejo seguro del Observable
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { TransactionsComponent } from './transactions/transactions.component';
+import { TransactionsComponent } from './dashboard/transactions/transactions.component';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { SettingsComponent } from './dashboard/settings/settings.component';
 import { MainComponent } from './dashboard/main/main.component';
+import { ManageUserComponent } from './dashboard/manageuser/manageuser.component';
 
 // ✅ Función guard para controlar acceso a la ruta de setup
 const setupGuard: CanActivateFn = async () => {
@@ -39,7 +40,8 @@ export const routes: Routes = [
     children: [
       { path: '', component: MainComponent }, 
       { path: 'settings', component: SettingsComponent },
-      { path: 'transactions', component: TransactionsComponent } 
+      { path: 'transactions', component: TransactionsComponent }, 
+      { path: 'manageuser', component: ManageUserComponent } 
     ]
   }
 ];
