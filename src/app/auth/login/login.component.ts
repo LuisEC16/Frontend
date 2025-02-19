@@ -31,7 +31,8 @@ export class LoginComponent {
     this.loginService.login({ user: this.users.user, password: hashedPassword }).subscribe({
       next: (response) => {
         if (response.token) {
-          localStorage.setItem('authToken', response.token); // ✅ Guarda el token
+          localStorage.setItem('authToken', response.token); // 🔹 Guardar el token
+          localStorage.setItem('user', JSON.stringify(response.user));  // ✅ Guarda el token
           this.router.navigate(['/dashboard']); // ✅ Redirige al dashboard
         } else {
           this.errorMessage = 'No se recibió un token válido.';

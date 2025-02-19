@@ -6,12 +6,13 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SettingsService {
-  private apiUrl = 'https://tu-backend.com/api';
+  private apiUrl = 'http://localhost:8000/api';
 
   constructor(private http: HttpClient) {}
 
-  updatePassword(data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/update-password`, data);
+  updatePassword(userId: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/users/${userId}/update-password`, data);
   }
+  
 
 }
