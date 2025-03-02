@@ -4,17 +4,6 @@
     width: 100%;
   }
   
-  /* Sidebar fija */
-  .sidebar {
-    width: 250px;
-    background-color: #4A90E2;
-    color: #333;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    padding: 20px;
-  }
   
   /* Contenido principal */
   .dashboard-content {

@@ -1,51 +1,65 @@
-<div class="container">
-    <div class="header">
-        <h2>Lista de usuarios</h2>
-        <button class="add-user-btn" (click)="openAddUserForm()">+ Añadir Usuario</button>
-    </div>
+<div class="user-container">
+  <h2>User’s List</h2>
 
-    <!-- Barra de búsqueda -->
-    <div class="search-bar">
-        <input type="text" [(ngModel)]="searchText" placeholder="Buscar usuario..." (input)="filterUsers()">
-        <button class="search-btn">Buscar</button>
-    </div>
+  <!-- Notificación -->
+  <p-toast></p-toast>
 
-    <!-- Tabla de usuarios -->
-    <table>
-        <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Creado el</th>
-                <th>Opciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let user of filteredUsers">
-                <td>{{ user.name }}</td>
-                <td>{{ user.created_at | date:'yyyy-MM-dd' }}</td>
-                <td>
-                    <button class="edit-btn" (click)="openEditUserForm(user)">Editar</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+  <!-- Barra de búsqueda -->
+  <div class="search-bar">
+      <p-inputText [(ngModel)]="searchText" placeholder="Search user ..." class="search-input"></p-inputText>
+      <p-button label="Search" icon="pi pi-search" (click)="filterUsers()"></p-button>
+      <p-button label="Add New User" icon="pi pi-user-plus" class="p-button-primary" (click)="openAddUserForm()"></p-button>
+  </div>
 
-    <!-- Modal para añadir usuario -->
-    <div *ngIf="showAddUserForm" class="modal">
-        <div class="form-container">
-            <h2>Crear Usuario</h2>
-            <form [formGroup]="addUserForm" (ngSubmit)="saveUser()">
-                <label>Usuario *</label>
-                <input type="text" formControlName="user" required>
+  <!-- Tabla de usuarios -->
+  <p-table [value]="filteredUsers" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+          <tr>
+              <th>User</th>
+              <th>Created At</th>
+              <th>Updated At</th>
+              <th>Options</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user>
+          <tr>
+              <td>{{ user.user }}</td>
+              <td>{{ user.created_at | date:'yyyy-MM-dd HH:mm' }}</td>
+              <td>{{ user.updated_at | date:'yyyy-MM-dd HH:mm' }}</td>
+              <td>
+                  <p-button label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="confirmDeleteUser(user)"></p-button>
+              </td>
+          </tr>
+      </ng-template>
+  </p-table>
 
-                <label>Contraseña *</label>
-                <input type="password" formControlName="password" required>
+  <!-- Modal para añadir usuario -->
+  <p-dialog [(visible)]="showAddUserForm" [modal]="true" [closable]="false" header="Create User">
+      <form [formGroup]="addUserForm" (ngSubmit)="saveUser()">
+          <div class="p-field">
+              <label>Username *</label>
+              <p-inputText type="text" formControlName="user" ngDefaultControl></p-inputText>
+          </div>
 
-                <div class="actions">
-                    <button type="button" (click)="closeAddUserForm()">Cancelar</button>
-                    <button type="submit" [disabled]="addUserForm.invalid">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+          <div class="p-field">
+              <label>Password *</label>
+              <p-password formControlName="password" toggleMask ngDefaultControl></p-password>
+          </div>
+
+          <div class="actions">
+              <p-button label="Cancel" icon="pi pi-times" class="p-button-secondary" (click)="closeAddUserForm()"></p-button>
+              <p-button type="submit" label="Save" icon="pi pi-check" [disabled]="addUserForm.invalid"></p-button>
+          </div>
+      </form>
+  </p-dialog>
+
+  <!-- Modal de confirmación para eliminar usuario -->
+  <p-dialog [(visible)]="showDeleteConfirm" [modal]="true" header="Confirm Delete">
+      <p>Type <strong>ELIMINAR</strong> to confirm:</p>
+      <p-inputText [(ngModel)]="deleteConfirmation"></p-inputText>
+      <div class="actions">
+          <p-button label="Cancel" icon="pi pi-times" class="p-button-secondary" (click)="closeDeleteConfirm()"></p-button>
+          <p-button label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteUser()" [disabled]="deleteConfirmation !== 'ELIMINAR'"></p-button>
+      </div>
+  </p-dialog>
 </div>

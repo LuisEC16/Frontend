@@ -1,178 +1,27 @@
-/* General */
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f7fc;
-    color: #333;
-}
-
-.container {
-    width: 100%;
-    max-width: 1000px;
-    margin: 40px auto;
+.user-container {
+    max-width: 900px;
+    margin: auto;
     padding: 20px;
-    background: white;
-    border-radius: 10px;
+    background: #fff;
+    border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
 }
 
-/* Encabezado */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.header h2 {
-    font-size: 22px;
-    color: #333;
-}
-
-.add-user-btn {
-    background: #4f46e5;
-    color: white;
-    padding: 10px 16px;
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: background 0.3s ease;
-}
-
-.add-user-btn:hover {
-    background: #4338ca;
-}
-
-/* Barra de búsqueda */
 .search-bar {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
 }
 
-.search-bar input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-}
-
-.search-btn {
-    background: #4f46e5;
-    color: white;
-    padding: 10px 16px;
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: background 0.3s ease;
-}
-
-.search-btn:hover {
-    background: #4338ca;
-}
-
-/* Tabla */
-table {
+.p-table {
     width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
 }
 
-table th, table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+.p-button-primary {
+    background: #6366f1 !important;
 }
 
-table th {
-    background: #e0e7ff;
-    color: #333;
-    font-weight: bold;
-}
-
-table tbody tr:hover {
-    background: #f8f9ff;
-}
-
-/* Botón Editar */
-.edit-btn {
-    background: #ff9800;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background 0.3s ease;
-}
-
-.edit-btn:hover {
-    background: #e68900;
-}
-
-/* Modal */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.form-container {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    width: 350px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.form-container h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.form-container input {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-}
-
-.actions button {
-    padding: 8px 14px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.actions button:first-child {
-    background: #ccc;
-    color: #333;
-}
-
-.actions button:last-child {
-    background: #4f46e5;
-    color: white;
-    transition: background 0.3s ease;
-}
-
-.actions button:last-child:hover {
-    background: #4338ca;
+.p-button-danger {
+    background: #dc2626 !important;
 }
