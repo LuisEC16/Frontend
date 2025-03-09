@@ -1,58 +1,87 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { SettingsService } from './settings.service';
-import  CryptoJS from 'crypto-js';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SettingsService } from '../settings/settings.service';
+import { MessageService } from 'primeng/api';
+import * as CryptoJS from 'crypto-js';
+import { Toast } from 'primeng/toast';
+import { PasswordModule } from 'primeng/password';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-settings',
-  standalone: true,
-  imports: [ReactiveFormsModule],
   templateUrl: './settings.component.html',
-  styleUrl: './settings.component.css'
+  styleUrl: './settings.component.css',
+  providers: [MessageService],
+  imports: [Toast, PasswordModule, ReactiveFormsModule]
 })
 export class SettingsComponent {
-  passwordForm = new FormGroup({
-    oldPassword: new FormControl('', [Validators.required]),
-    newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    confirmPassword: new FormControl('', [Validators.required])
-  });
+  passwordForm: FormGroup;
 
-  constructor(private settingsService: SettingsService) {}
+  constructor(
+    private fb: FormBuilder,
+    private settingsService: SettingsService,
+    private messageService: MessageService
+  ) {
+    this.passwordForm = this.fb.group({
+      oldPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(8)]]
+    });
+  }
 
   changePassword() {
-    const userId = this.getUserId(); // Obtener el ID del usuario
+    if (this.passwordForm.invalid) {
+      if (!this.passwordForm.value.oldPassword) {
+        this.showToast('error', 'Error', 'La contraseña actual es obligatoria');
+      }
+      if (!this.passwordForm.value.newPassword) {
+        this.showToast('error', 'Error', 'La nueva contraseña es obligatoria');
+      }
+      if (
+        this.passwordForm.value.newPassword &&
+        this.passwordForm.value.newPassword.length < 8
+      ) {
+        this.showToast(
+          'error',
+          'Error',
+          'La nueva contraseña debe tener al menos 8 caracteres'
+        );
+      }
+      return;
+    }
 
+    const userId = this.getUserId();
     if (!userId) {
-      alert("Error: No se pudo obtener el ID del usuario.");
+      this.showToast('error', 'Error', 'No se pudo obtener el ID del usuario');
       return;
     }
 
-    if (this.passwordForm.value.newPassword !== this.passwordForm.value.confirmPassword) {
-      alert("Las contraseñas no coinciden");
-      return;
-    }
-
-    // 🔹 Asegurar que los valores sean `string`
-    const oldPassword = this.passwordForm.value.oldPassword ?? '';
-    const newPassword = this.passwordForm.value.newPassword ?? '';
-
-    // 🔹 Hashear contraseñas en SHA-256 con CryptoJS
-    const currentPasswordHash = CryptoJS.SHA256(oldPassword).toString();
-    const newPasswordHash = CryptoJS.SHA256(newPassword).toString();
+    const oldPasswordHash = CryptoJS.SHA256(
+      this.passwordForm.value.oldPassword
+    ).toString();
+    const newPasswordHash = CryptoJS.SHA256(
+      this.passwordForm.value.newPassword
+    ).toString();
 
     const data = {
-      current_password: currentPasswordHash,
+      current_password: oldPasswordHash,
       new_password: newPasswordHash
     };
 
     this.settingsService.updatePassword(userId, data).subscribe({
-      next: response => {
-        alert("Contraseña actualizada correctamente");
+      next: (response) => {
+        this.showToast(
+          'success',
+          'Éxito',
+          'Contraseña actualizada correctamente'
+        );
         this.passwordForm.reset();
       },
-      error: (err: any) => {
-        console.error("Error al actualizar la contraseña:", err);
-        alert("Error al actualizar la contraseña");
+      error: (err) => {
+        this.showToast(
+          'error',
+          'Error',
+          err.error.message || 'Error al actualizar la contraseña'
+        );
       }
     });
   }
@@ -63,5 +92,9 @@ export class SettingsComponent {
 
     const user = JSON.parse(userData);
     return user.id ?? null;
+  }
+
+  showToast(severity: string, summary: string, detail: string) {
+    this.messageService.add({ severity, summary, detail });
   }
 }

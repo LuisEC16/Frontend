@@ -1,117 +1,134 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ManageuserService } from './manageuser.service';
-import { MessageService } from 'primeng/api';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import * as CryptoJS from 'crypto-js';
-
-/* Importar módulos de PrimeNG */
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ManageuserService } from '../manageuser/manageuser.service';
+import { MessageService, ConfirmationService} from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { ToastModule } from 'primeng/toast';
-import { PasswordModule } from 'primeng/password';
+import { Toast } from 'primeng/toast';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
-  selector: 'app-manage-user',
-  standalone: true,
+  selector: 'app-settings',
   templateUrl: './manageuser.component.html',
-  styleUrls: ['./manageuser.component.css'],
-  providers: [MessageService], // ✅ Importar el servicio de notificaciones
-  imports: [
-    CommonModule,
-    FormsModule,
+  styleUrl: './manageuser.component.css',
+  providers: [MessageService, ManageuserService, ConfirmationService],
+  imports: [TableModule,
+    ButtonModule, 
+    DialogModule, 
+    Toast,
     ReactiveFormsModule,
-    TableModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    ToastModule,
-    PasswordModule,
+    CommonModule,
     ConfirmDialogModule
-  ]
+    ]
 })
-export class ManageUserComponent implements OnInit {
+export class ManageuserComponent implements OnInit {
   users: any[] = [];
-  filteredUsers: any[] = [];
-  showAddUserForm = false;
-  showDeleteConfirm = false;
-  selectedUser: any = null;
-  deleteConfirmation = '';
-  searchText = '';
+  editDialog: boolean = false;
+  createDialog: boolean = false;
+  selectedUserId: number | null = null;
 
-  // ✅ Usar FormGroup con nonNullable para evitar errores con null
-  addUserForm = new FormGroup({
-    user: new FormControl('', Validators.required),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)])
-});
+  editUserForm: FormGroup;
+  createUserForm: FormGroup;
 
+  constructor(
+    private userService: ManageuserService,
+    private fb: FormBuilder,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) {
+    this.editUserForm = this.fb.group({
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    });
 
-  constructor(private manageuserService: ManageuserService, private messageService: MessageService) {}
+    this.createUserForm = this.fb.group({
+      user: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    });
+  }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadUsers();
   }
 
   loadUsers() {
-    this.manageuserService.getUsers().subscribe(users => {
-      this.users = (users || []).filter(user => user.user !== 'admin'); // ✅ Evitar errores con null
-      this.filteredUsers = [...this.users];
+    this.userService.getUsers().subscribe({
+      next: (response) => {
+        this.users = response.filter(user => user.is_root !== 1);
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los usuarios' });
+      }
     });
   }
 
-  filterUsers() {
-    this.filteredUsers = this.searchText
-      ? this.users.filter(user => user.user.toLowerCase().includes(this.searchText.toLowerCase()))
-      : [...this.users];
+  editUser(user: any) {
+    this.selectedUserId = user?.id; // ✅ Usar ?. para evitar errores de null
+    this.editUserForm.reset();
+    this.editDialog = true;
   }
 
-  openAddUserForm() {
-    this.showAddUserForm = true;
-    this.addUserForm.reset();
-  }
+  updateUser() {
+    if (this.editUserForm.invalid) return;
 
-  closeAddUserForm() {
-    this.showAddUserForm = false;
-  }
+    const password = this.editUserForm.value.password;
 
-  saveUser() {
-    if (this.addUserForm.invalid) return;
-
-    const rawPassword = this.addUserForm.value.password ?? ''; // ✅ Evitar null
-    const hashedPassword = CryptoJS.SHA256(rawPassword).toString();
-    const newUser = {
-      user: this.addUserForm.value.user,
-      password: hashedPassword,
-    };
-
-    this.manageuserService.addUser(newUser).subscribe(() => {
-      this.loadUsers();
-      this.showAddUserForm = false;
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User added successfully!' });
+    this.userService.updateUserPassword(this.selectedUserId!, { password }).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Contraseña actualizada' });
+        this.editDialog = false;
+        this.loadUsers();
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar la contraseña' });
+      }
     });
   }
 
   confirmDeleteUser(user: any) {
-    this.selectedUser = user;
-    this.showDeleteConfirm = true;
-    this.deleteConfirmation = '';
+    this.confirmationService.confirm({
+      message: `¿Estás seguro de que deseas eliminar al usuario <b>${user.name}</b>?`,
+      header: 'Confirmar eliminación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteUser(user.id);
+      }
+    });
   }
 
-  closeDeleteConfirm() {
-    this.showDeleteConfirm = false;
+  deleteUser(userId: number) {
+    this.userService.deleteUser(userId).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Usuario eliminado correctamente' });
+        this.loadUsers();
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar el usuario' });
+      }
+    });
   }
 
-  deleteUser() {
-    if (this.deleteConfirmation !== 'ELIMINAR') return;
+  showCreateDialog() {
+    this.createUserForm.reset();
+    this.createDialog = true;
+  }
 
-    this.manageuserService.deleteUser(this.selectedUser.id).subscribe(() => {
-      this.loadUsers();
-      this.showDeleteConfirm = false;
-      this.messageService.add({ severity: 'success', summary: 'Deleted', detail: 'User deleted successfully!' });
+  createUser() {
+    if (this.createUserForm.invalid) return;
+
+    const newUser = this.createUserForm.value;
+
+    this.userService.createUser(newUser).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Usuario creado correctamente' });
+        this.createDialog = false;
+        this.loadUsers();
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el usuario' });
+      }
     });
   }
 }

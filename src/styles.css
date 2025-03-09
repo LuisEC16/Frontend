@@ -1,13 +1,15 @@
-@import url('/assets/fonts/primeicons.css');
-@import 'ngx-toastr/toastr.css';
 @import "tailwindcss";
-@import 'primeicons/primeicons.css';
-
+@import "tailwindcss-primeui";
+@import "primeflex/primeflex.css";
 
 body{
     margin: 0;
     background: #e6e5e0;
+    font-family: var(--font-family);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
+
 .error-message {
     color: red;
     font-size: 16px;

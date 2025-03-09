@@ -1,65 +1,67 @@
-<div class="user-container">
-  <h2>User’s List</h2>
+<div class="ml-64 flex-1 p-8">
+    <p-toast></p-toast>
+    <p-confirmDialog></p-confirmDialog>
+    <p-button label="Agregar Usuario" icon="pi pi-user-plus" class="p-button-success" (click)="showCreateDialog()"></p-button>
+    <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Usuario</th>
+                <th>Creado</th>
+                <th>Actualizado</th>
+                <th>Opciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.created_at | date:'short' }}</td>
+                <td>{{ user.updated_at | date:'short' }}</td>
+                <td>
+                    <button class="p-button p-button-sm p-button-warning" (click)="editUser(user)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                        </svg>                          
+                    </button>
+                    <button class="p-button p-button-sm p-button-danger"  (click)="confirmDeleteUser(user)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                        </svg>
+                    </button>
+                    
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
+    <!-- Diálogo Editar Usuario -->
+    <p-dialog header="Editar Usuario" [(visible)]="editDialog" [modal]="true" [style]="{ width: '30rem' }">
+        <form [formGroup]="editUserForm" (ngSubmit)="updateUser()">
+            <div class="mb-3">
+                <label for="password">Nueva Contraseña</label>
+                <input pInputText id="password" type="password" formControlName="password" class="w-full" />
+            </div>
+            <div class="flex justify-end gap-2">
+                <p-button label="Cancelar" severity="secondary" (click)="editDialog = false" />
+                <p-button label="Guardar" type="submit" />
+            </div>
+        </form>
+    </p-dialog>
 
-  <!-- Notificación -->
-  <p-toast></p-toast>
-
-  <!-- Barra de búsqueda -->
-  <div class="search-bar">
-      <p-inputText [(ngModel)]="searchText" placeholder="Search user ..." class="search-input"></p-inputText>
-      <p-button label="Search" icon="pi pi-search" (click)="filterUsers()"></p-button>
-      <p-button label="Add New User" icon="pi pi-user-plus" class="p-button-primary" (click)="openAddUserForm()"></p-button>
-  </div>
-
-  <!-- Tabla de usuarios -->
-  <p-table [value]="filteredUsers" responsiveLayout="scroll">
-      <ng-template pTemplate="header">
-          <tr>
-              <th>User</th>
-              <th>Created At</th>
-              <th>Updated At</th>
-              <th>Options</th>
-          </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-user>
-          <tr>
-              <td>{{ user.user }}</td>
-              <td>{{ user.created_at | date:'yyyy-MM-dd HH:mm' }}</td>
-              <td>{{ user.updated_at | date:'yyyy-MM-dd HH:mm' }}</td>
-              <td>
-                  <p-button label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="confirmDeleteUser(user)"></p-button>
-              </td>
-          </tr>
-      </ng-template>
-  </p-table>
-
-  <!-- Modal para añadir usuario -->
-  <p-dialog [(visible)]="showAddUserForm" [modal]="true" [closable]="false" header="Create User">
-      <form [formGroup]="addUserForm" (ngSubmit)="saveUser()">
-          <div class="p-field">
-              <label>Username *</label>
-              <p-inputText type="text" formControlName="user" ngDefaultControl></p-inputText>
-          </div>
-
-          <div class="p-field">
-              <label>Password *</label>
-              <p-password formControlName="password" toggleMask ngDefaultControl></p-password>
-          </div>
-
-          <div class="actions">
-              <p-button label="Cancel" icon="pi pi-times" class="p-button-secondary" (click)="closeAddUserForm()"></p-button>
-              <p-button type="submit" label="Save" icon="pi pi-check" [disabled]="addUserForm.invalid"></p-button>
-          </div>
-      </form>
-  </p-dialog>
-
-  <!-- Modal de confirmación para eliminar usuario -->
-  <p-dialog [(visible)]="showDeleteConfirm" [modal]="true" header="Confirm Delete">
-      <p>Type <strong>ELIMINAR</strong> to confirm:</p>
-      <p-inputText [(ngModel)]="deleteConfirmation"></p-inputText>
-      <div class="actions">
-          <p-button label="Cancel" icon="pi pi-times" class="p-button-secondary" (click)="closeDeleteConfirm()"></p-button>
-          <p-button label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteUser()" [disabled]="deleteConfirmation !== 'ELIMINAR'"></p-button>
-      </div>
-  </p-dialog>
+    <!-- Diálogo Crear Usuario -->
+    <p-dialog header="Crear Usuario" [(visible)]="createDialog" [modal]="true" [style]="{ width: '30rem' }">
+        <form [formGroup]="createUserForm" (ngSubmit)="createUser()">
+            <div class="mb-3">
+                <label for="username">Usuario</label>
+                <input pInputText id="username" type="text" formControlName="user" class="w-full" />
+            </div>
+            <div class="mb-3">
+                <label for="password">Contraseña</label>
+                <input pInputText id="password" type="password" formControlName="password" class="w-full" />
+            </div>
+            <div class="flex justify-end gap-2">
+                <p-button label="Cancelar" severity="secondary" (click)="createDialog = false" />
+                <p-button label="Crear" type="submit" />
+            </div>
+        </form>
+    </p-dialog>    
 </div>

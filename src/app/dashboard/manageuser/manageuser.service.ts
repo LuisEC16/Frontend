@@ -10,15 +10,23 @@ export class ManageuserService {
 
   constructor(private http: HttpClient) {}
 
+  // Obtener usuarios
   getUsers(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  addUser(user: any): Observable<any> {
-    return this.http.post(this.apiUrl, user);
+  // Crear usuario
+  createUser(data: any): Observable<any> {
+    return this.http.post(this.apiUrl, data);
   }
 
-  deleteUser(userId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${userId}`);
+  // Actualizar contraseña de usuario
+  updateUserPassword(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}/update-password`, data);
+  }
+
+  // Eliminar usuario
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }
