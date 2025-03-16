@@ -11,6 +11,7 @@ import { authGuard } from './auth.guard';
 import { SettingsComponent } from './dashboard/settings/settings.component';
 import { MainComponent } from './dashboard/main/main.component';
 import { ManageuserComponent } from './dashboard/manageuser/manageuser.component';
+import { CourseComponent } from './dashboard/course/course.component';
 
 // ✅ Función guard para controlar acceso a la ruta de setup
 const setupGuard: CanActivateFn = async () => {
@@ -41,7 +42,8 @@ export const routes: Routes = [
       { path: '', component: MainComponent }, 
       { path: 'settings', component: SettingsComponent },
       { path: 'transactions', component: TransactionsComponent }, 
-      { path: 'manageuser', component: ManageuserComponent } 
+      { path: 'manageuser', component: ManageuserComponent }, 
+      { path: 'course', component: CourseComponent }
     ]
   }
 ];

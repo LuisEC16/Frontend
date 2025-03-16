@@ -1,8 +1,22 @@
 <div class="ml-64 flex-1 p-8">
     <p-toast></p-toast>
     <p-confirmDialog></p-confirmDialog>
-    <p-button label="Agregar Usuario" icon="pi pi-user-plus" class="p-button-success" (click)="showCreateDialog()"></p-button>
-    <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }">
+    <div class="flex justify-between items-center">
+    
+        
+        <p-iconfield iconPosition="left">
+            <p-inputicon styleClass="pi pi-search" />
+            <input type="text" pInputText placeholder="Buscar usuario"
+                [(ngModel)]="searchQuery" (input)="filterUsers()"
+                class="p-2 border w-3xl pl-5"/>
+        </p-iconfield>
+    
+        <p-button label="Agregar Usuario" icon="pi pi-user-plus"
+            class="p-button-success"
+            (click)="showCreateDialog()">
+        </p-button>
+    </div>
+        <p-table #dt [value]="filteredUsers" [paginator]="true" [rows]="9" [responsiveLayout]="'scroll'" class="custom-table">
         <ng-template pTemplate="header">
             <tr>
                 <th>Usuario</th>

@@ -1,0 +1,69 @@
+<div class="ml-64 flex-1 p-8">
+    <div class="p-6 bg-gray-900 rounded-lg shadow-lg">
+      <h2 class="text-white text-xl font-bold mb-4">📊 Cursos Cancelados</h2>
+  
+      <!-- Filtros -->
+      <div class="flex justify-between items-center mb-4">
+        <!-- Búsqueda por ID -->
+        <input
+          type="text"
+          pInputText
+          placeholder="Buscar por ID"
+          class="p-2 rounded w-64 bg-gray-800 text-white border border-gray-600"
+          (input)="searchById($any($event.target).value)"
+        />
+  
+        <!-- Filtro por estudiante -->
+        <input
+          type="text"
+          pInputText
+          placeholder="Buscar por estudiante"
+          class="p-2 rounded w-64 bg-gray-800 text-white border border-gray-600"
+          (input)="searchByStudent($any($event.target).value)"
+        />
+  
+        <!-- Filtro por curso -->
+        <input
+          type="text"
+          pInputText
+          placeholder="Buscar por curso"
+          class="p-2 rounded w-64 bg-gray-800 text-white border border-gray-600"
+          (input)="searchByCourse($any($event.target).value)"
+        />
+      </div>
+  
+      <!-- Mensaje si no hay cursos cancelados -->
+      <div *ngIf="courses.length === 0" class="text-white text-center py-4">
+        No hay cursos cancelados que coincidan con los criterios de búsqueda.
+      </div>
+  
+      <!-- Tabla de cursos cancelados -->
+      <p-table *ngIf="courses.length > 0" [value]="courses" class="p-datatable p-datatable-striped">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>ID Relación</th>
+            <th>Fecha de Creación</th>
+            <th>Estado</th>
+            <th>Motivo de Cancelación</th>
+            <th>Estudiante</th>
+            <th>Curso</th>
+            <th>Precio del Curso</th>
+          </tr>
+        </ng-template>
+  
+        <ng-template pTemplate="body" let-course>
+          <tr>
+            <td>{{ course.id }}</td>
+            <td>{{ course.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <p-tag severity="danger" value="Cancelado" />
+            </td>
+            <td>{{ course.cancellationReason }}</td>
+            <td>{{ course.user.firstName }} {{ course.user.lastName }}</td>
+            <td>{{ course.course.name }}</td>
+            <td>{{ course.course.price | currency }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>

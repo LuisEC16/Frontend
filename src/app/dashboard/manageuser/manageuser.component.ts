@@ -6,9 +6,15 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { Toast } from 'primeng/toast';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToolbarModule } from 'primeng/toolbar';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import CryptoJS from 'crypto-js';
+
 
 @Component({
   selector: 'app-settings',
@@ -20,15 +26,24 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     DialogModule, 
     Toast,
     ReactiveFormsModule,
+    FormsModule,
     CommonModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    ToolbarModule,
+    InputTextModule,
+    IconField,
+    InputIcon 
     ]
 })
 export class ManageuserComponent implements OnInit {
   users: any[] = [];
+  filteredUsers: any[] = [];
+  searchQuery: string = '';
+
   editDialog: boolean = false;
   createDialog: boolean = false;
   selectedUserId: number | null = null;
+
 
   editUserForm: FormGroup;
   createUserForm: FormGroup;
@@ -54,18 +69,29 @@ export class ManageuserComponent implements OnInit {
   }
 
   loadUsers() {
-    this.userService.getUsers().subscribe({
-      next: (response) => {
+    this.userService.getUsers().subscribe(
+      (response) => {
         this.users = response.filter(user => user.is_root !== 1);
+        this.filteredUsers = [...this.users]; // Inicializar la lista filtrada
       },
-      error: () => {
+      (error) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los usuarios' });
       }
-    });
+    );
+  }
+
+  filterUsers() {
+    if (!this.searchQuery) {
+      this.filteredUsers = [...this.users];
+    } else {
+      this.filteredUsers = this.users.filter(user =>
+        user.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
   }
 
   editUser(user: any) {
-    this.selectedUserId = user?.id; // ✅ Usar ?. para evitar errores de null
+    this.selectedUserId = user?.id; 
     this.editUserForm.reset();
     this.editDialog = true;
   }
@@ -118,7 +144,10 @@ export class ManageuserComponent implements OnInit {
   createUser() {
     if (this.createUserForm.invalid) return;
 
-    const newUser = this.createUserForm.value;
+    const newUser = {
+      user: this.createUserForm.value.user,
+      password: CryptoJS.SHA256(this.createUserForm.value.password).toString() // Hashear la contraseña
+    };
 
     this.userService.createUser(newUser).subscribe({
       next: () => {

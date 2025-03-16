@@ -1,70 +1,84 @@
-<div class="transactions-container">
-    <!-- 🔹 Título -->
-    <h2>🔎 Auditoría de Transacciones</h2>
+<div class="ml-64 flex-1 p-8">
+  <div class="p-6 bg-gray-900 rounded-lg shadow-lg">
+    <h2 class="text-white text-xl font-bold mb-4">📊 Transacciones</h2>
   
-    <!-- 🔹 Filtros -->
-    <div class="filters">
-      <label for="date">📅 Fecha:</label>
-      <input type="date" id="date" [(ngModel)]="filters.date">
-  
-      <label for="status">🟢 Estado:</label>
-      <select id="status" [(ngModel)]="filters.status">
-        <option value="">Todos</option>
-        <option value="ready_to_be_checked">Por Verificar</option>
-        <option value="completed">Completado</option>
-        <option value="pending">Pendiente</option>
-      </select>
-  
-      <label for="method">💳 Método de Pago:</label>
-      <select id="method" [(ngModel)]="filters.method">
-        <option value="">Todos</option>
-        <option value="zelle">Zelle</option>
-        <option value="paypal">PayPal</option>
-        <option value="credit_card">Tarjeta</option>
-        <option value="bank_transfer">Transferencia Bancaria</option>
-      </select>
-  
-      <button (click)="applyFilters()" class="apply-btn">🔍 Aplicar Filtros</button>
+    <!-- Filtros -->
+    <div class="flex justify-between items-center mb-4">
+      <!-- Búsqueda por ID -->
+      <input
+        type="text"
+        pInputText
+        placeholder="Buscar por ID"
+        class="p-2 rounded w-64 bg-gray-800 text-white border border-gray-600"
+        (input)="searchById($any($event.target).value)"
+      />
+
+      <!-- Filtro por estatus -->
+      <p-dropdown
+        [options]="statusOptions"
+        placeholder="Filtrar por estatus"
+        class="w-64 ml-4"
+        (onChange)="filterByStatus($event.value)"
+      ></p-dropdown>
+
+      <!-- Filtro por monto -->
+      <p-inputNumber
+        placeholder="Buscar por monto"
+        class="w-64 ml-4"
+        mode="decimal"
+        (onInput)="filterByAmount(+($event.value ?? 0))"
+      ></p-inputNumber>
+
+      <!-- Filtro por fecha -->
+      <p-calendar
+        placeholder="Fecha inicial"
+        class="w-64 ml-4"
+        [showIcon]="true"
+        (onSelect)="filterByDate($event, endDate.value)"
+        #startDate
+      ></p-calendar>
+
+      <p-calendar
+        placeholder="Fecha final"
+        class="w-64 ml-4"
+        [showIcon]="true"
+        (onSelect)="filterByDate(startDate.value, $event)"
+        #endDate
+      ></p-calendar>
     </div>
   
-    <!-- 🔹 Tabla de transacciones -->
-    <table class="transactions-table">
-      <thead>
+    <p-table [value]="transactions" class="p-datatable p-datatable-striped">
+      <ng-template pTemplate="header">
+        <div *ngIf="transactions.length === 0" class="text-white text-center py-4">
+          No hay transacciones que coincidan con los criterios de búsqueda.
+        </div>
         <tr>
           <th>ID</th>
-          <th>Usuario</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Método de Pago</th>
+          <th>Estudiante</th>
           <th>Curso</th>
           <th>Monto</th>
-          <th>Estado</th>
-          <th>Método de Pago</th>
-          <th>Fecha</th>
           <th>Validado Por</th>
         </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="filteredTransactions.length === 0">
-          <td colspan="8">⚠️ No hay transacciones disponibles.</td>
-        </tr>
-        <tr *ngFor="let transaction of filteredTransactions">
-          <td>{{ transaction.id }}</td>
-          <td>{{ transaction.user?.firstName }} {{ transaction.user?.lastName }}</td>
-          <td>{{ transaction.course?.name }}</td>
-          <td>{{ transaction.amount | currency:'USD' }}</td>
-          <td>{{ transaction.status }}</td>
-          <td>{{ transaction.paymentMethod }}</td>
-          <td>{{ transaction.createdAt | date:'short' }}</td>
-          <td *ngIf="transaction.validatedBy; else notValidated">
-            {{ transaction.validatedBy.firstName }} {{ transaction.validatedBy.lastName }}
-          </td>
-          <ng-template #notValidated>
-            <td>❌ No validado</td>
-          </ng-template>
-        </tr>
-      </tbody>
+      </ng-template>
       
-    </table>
-  
-    <!-- 🔹 Exportar Transacciones -->
-    <button (click)="exportTransactions()" class="export-btn">📥 Exportar CSV</button>
-  </div>
-  
+      <ng-template pTemplate="body" let-transaction>
+        <tr>
+          <td>{{ transaction.id }}</td>
+          <td>
+            <p-tag [severity]="getSeverity(transaction.status)" [value]="transaction.status" />
+          </td>
+          <td>{{ transaction.createdAt }}</td>
+          <td>{{ transaction.paymentMethod }}</td>
+          <td>{{ transaction.student }}</td>
+          <td>{{ transaction.course }}</td>
+          <td>{{ transaction.amount }}</td>
+          <td>{{ transaction.validatedBy }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>  
+</div>
+
