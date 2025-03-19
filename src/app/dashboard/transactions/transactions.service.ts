@@ -48,10 +48,21 @@ export class TransactionsService {
           paymentMethod: tx.paymentMethod,
           student: `${tx.user.firstName} ${tx.user.lastName}`,
           course: tx.course.name,
-          amount: `$${tx.course.price}`,
+          amount: Number(tx.course.price),
           validatedBy: tx.validatedBy ? `${tx.validatedBy.firstName} ${tx.validatedBy.lastName}` : 'No validado'
         }));
       })
     );
   }
+
+  getTotalCompletedTransactions(): Observable<number> {
+    return this.getTransactions().pipe(
+      map((transactions: any[]) => {
+        return transactions
+          .filter(tx => tx.status === 'Completado') // Filtra solo las transacciones completadas
+          .reduce((sum, tx) => sum + tx.amount, 0); // Suma los montos
+      })
+    );
+  }
+  
 }

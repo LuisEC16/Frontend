@@ -1,56 +1,72 @@
-<div class="dashboard-layout">
-    
-    <div class="dashboard-content">
-      <div class="dashboard-header">
-        <h1>Bienvenido de nuevo!</h1>
-      </div>
-  
-      <div class="grid-container">
-        <div class="card">
-          <h3>Balance</h3>
-          <p>$8,888.38</p>
+<section class="ml-64 h-screen flex bg-amber-500">
+    <div class="w-10 h-full flex flex-col gap-5 bg-amber-50">
+
+
+      <div class="w-full h-[20%] flex justify-around bg-amber-300 p-3 px-4">
+        <div class="w-3 h-full shadow-lg bg-amber-700 rounded-md">
+          <h1>Transacciones mensuales</h1>
+          <p class="text-white text-xl mt-2">${{ totalCompletedTransactions }}</p>
         </div>
-        <div class="card">
-          <h3>Transacciones</h3>
-          <p>40 realizadas este mes</p>
+        <div class="w-3 h-full shadow-lg bg-amber-700 rounded-md">
+          <h1>Cursos cancelados mensuales</h1>
+          <p class="text-white text-xl mt-2">{{ totalCancelledCourses }}</p>
         </div>
-        <div class="card">
-          <h3>Ingresos</h3>
-          <p>$12,500</p>
-        </div>
-        <div class="card">
-          <h3>Gastos</h3>
-          <p>$4,800</p>
+        <div class="w-3 h-full shadow-lg bg-amber-700 rounded-md">
+          <h1>Por verificar mensuales</h1>
+          <p class="text-white text-xl mt-2"> {{ totalRTBCStatus }}</p>
         </div>
       </div>
-  
-      <div class="transactions">
-        <h2>Transacciones Recientes</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Tipo</th>
-              <th>Monto</th>
-              <th>Estado</th>
-              <th>Método</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Pago</td>
-              <td>$1,500</td>
-              <td class="status waiting">Pendiente</td>
-              <td>Tarjeta</td>
-            </tr>
-            <tr>
-              <td>Depósito</td>
-              <td>$240</td>
-              <td class="status success">Aprobado</td>
-              <td>Banco</td>
-            </tr>
-          </tbody>
-        </table>
+
+
+      <div class="w-full h-[40%] flex justify-around bg-amber-950 p-3">
+        <div class="w-8 h-full bg-amber-600">
+          <p-chart type="bar" [data]="data" [options]="options" class="h-[30rem]" />
+        </div>
+        <div class="w-3 h-full bg-amber-200">
+          <h1 class="text-black">grafico de cursos cancelados</h1>
+
+        </div>
+
       </div>
+
+
+      <div class="w-full h-[40%] bg-amber-700">
+        <h1>cuadro de transacciones con las 3 primeras columnas</h1>
+
+      </div>
+
     </div>
-  </div>
-  
+
+
+    <div class="w-5 h-full bg-black flex flex-col justify-around items-center">
+      <div class="w-70 h-80 bg-amber-50">
+        
+
+      </div>
+
+      <div class="w-70 h-87 bg-amber-50 rounded-md">
+        <h3 class="w-full text-center text-lg font-semibold text-gray-800 mb-4">Miembros</h3>
+
+        <ul class="space-y-2">
+            <li *ngFor="let member of teamMembers" class="flex items-center gap-3 p-2 bg-gray-100 rounded-lg">
+                <div class="w-2 h-9 flex items-center justify-center rounded-full bg-gray-300">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-700">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                </div>
+    
+                <div class="flex flex-col flex-grow">
+                    <span class="text-sm font-medium text-gray-900">{{ member.name }}</span>
+                    <span class="text-xs text-gray-500">{{ member.role }}</span>
+                </div>
+            </li>
+        </ul>
+    
+        <button class="m-4 w-10 h-10 mt-2 flex items-center justify-center gap-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+            <i class="pi pi-plus"></i> Add more member
+        </button>
+      </div>
+
+    </div>
+
+</section>
